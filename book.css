@@ -1,0 +1,110 @@
+* {
+    border-sizing: border-box;
+}
+
+html, body {
+    font-family: Raleway, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    background:rgb(38, 229, 197);
+    padding: 16px;
+    color: white;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+section h2 #bookForm {
+    border-radius: 8px;
+    margin: 16px;
+    background: #F8F9FA;
+    padding: 16px;
+    flex-grow: 1;
+    height: fit-content;
+}
+
+form {
+    width: 80%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 2px solid #333; 
+    border-radius: 10px; 
+    background-color: #f9f9f9; 
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; 
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  #bookFormSubmit {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  #bookFormSubmit:hover {
+    background-color: #218838;
+  }
+
+[data-testid="bookItemIsCompleteButton"],
+[data-testid="bookItemDeleteButton"],
+[data-testid="bookItemEditButton"] {
+  width: auto; 
+  min-width: 80px; 
+  padding: 5px 8px; 
+  font-size: 14px; 
+  border-radius: 4px;
+  margin: 3px; 
+  display: inline-block;
+  text-align: center;
+}
+
+section #incompleteBookList {
+    border-radius: 8px;
+    margin: 16px;
+    background: #F8F9FA;
+    padding: 16px;
+    flex-grow: 1;
+    height: fit-content;
+}
+
+section #completeBookList {
+    border-radius: 8px;
+    margin: 16px;
+    background: #F8F9FA;
+    padding: 16px;
+    flex-grow: 1;
+    height: fit-content;
+}
