@@ -1,108 +1,41 @@
-// // Do your work here...
-// ocument.addEventListener('DOMContentLoaded', function () {
-//   const submitForm = document.getElementById('form');
-//   submitForm.addEventListener('submit', function (event) {
-//     event.preventDefault();
-//     bookForm();
-//   });
-// });
-
-
-// document.addEventListener('DOMContentLoaded', function () {
-//   const submitForm = document.getElementById('form');
-//   submitForm.addEventListener('submit', function (event) {
-//     event.preventDefault();
-//     bookForm();
-//   });
-// });
-
-
-// function bookForm() {
-//   const bookItemTitle = document.getElementById('bookFormTitle').Value;
-//   const bookItemAuthor = document.getElementById('bookFormAuthor').Value;
-//   const bookItemYear = document.getElementById('bookFormYear').Value;
-
-//   const databookid = databookid();
-//   const BooksObject = generateBooksObject(databookid, bookTitle, bookAuthor, bookYear)
-//   books.push(BooksObject);
-
-//   document.dispatchEvent(new Event(RENDER_BOOK));
-//   saveData();
-// }
-
-// function createBookElement(BooksObject) {
-//   const bookItem = document.createElement('div');
-//   bookItem.classList.add('book-item');
-//   bookItem.setAttribute('data-bookid', BooksObject.id);
-//   bookItem.setAttribute('data-testid', 'bookForm');
-
-//   const bookTitle = document.createElement('h3');
-//   bookTitle.innerText = BooksObject.title;
-//   bookTitle.setAttribute('data-testid', 'bookFormTitle');
-
-//   const bookAuthor = document.createElement('p');
-//   bookAuthor.innerText = `Penulis: ${BooksObject.author}`;
-//   bookAuthor.setAttribute('data-testid', 'bookFormAuthor');
-
-//   const bookYear = document.createElement('p');
-//   bookYear.innerText = `Tahun: ${BooksObject.year}`;
-//   bookYear.setAttribute('data-testid', 'bookFormYear');
-
-//   const buttonContainer = document.createElement('div');
-
-//   const completeButton = document.createElement('button');
-//   completeButton.innerText = 'Selesai dibaca';
-//   completeButton.setAttribute('data-testid', 'bookItemIsCompleteButton');
-
-//   const deleteButton = document.createElement('button');
-//   deleteButton.innerText = 'Hapus Buku';
-//   deleteButton.setAttribute('data-testid', 'bookItemDeleteButton');
-
-//   const editButton = document.createElement('button');
-//   editButton.innerText = 'Edit Buku';
-//   editButton.setAttribute('data-testid', 'bookItemEditButton');
-
-//   buttonContainer.appendChild(completeButton);
-//   buttonContainer.appendChild(deleteButton);
-//   buttonContainer.appendChild(editButton);
-
-//   bookItem.appendChild(bookTitle);
-//   bookItem.appendChild(bookAuthor);
-//   bookItem.appendChild(bookYear);
-//   bookItem.appendChild(buttonContainer);
-
-//   return bookItem;
-// }
-
-// function databookid() {
-//   return +new Date();
-// }
-
 const books = [];
 const RENDER_BOOK = 'render-book';
 
 document.addEventListener('DOMContentLoaded', function () {
-  const submitForm = document.getElementById('form');
+  const submitForm = document.getElementById('bookForm');
   if (submitForm) {
     submitForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      bookForm();
+      addBook();
     });
   }
+  loadData();
 });
 
-function bookForm() {
+
+function addBook() {
   const bookItemTitle = document.getElementById('bookFormTitle').value;
   const bookItemAuthor = document.getElementById('bookFormAuthor').value;
   const bookItemYear = document.getElementById('bookFormYear').value;
+  const bookItemIsComplete = document.getElementById('bookFormIsComplete').checked; 
 
   const bookId = databookid();
-  const bookObject = generateBooksObject(bookId, bookItemTitle, bookItemAuthor, bookItemYear, false);
+  const bookObject = generateBooksObject(bookId, bookItemTitle, bookItemAuthor, bookItemYear,bookItemIsComplete);
   
   books.push(bookObject);
+  saveData(); 
   document.dispatchEvent(new Event(RENDER_BOOK));
-  saveData();
+  document.getElementById('bookForm').reset();
 }
+
+function loadData() {
+  const savedBooks = localStorage.getItem('books');
+  if (savedBooks) {
+    books.push(...JSON.parse(savedBooks));
+  }
+  document.dispatchEvent(new Event(RENDER_BOOK));
+}
+
 
 function generateBooksObject(id, title, author, year, isComplete) {
   return {
@@ -135,7 +68,7 @@ function createBookElement(bookObject) {
   const buttonContainer = document.createElement('div');
 
   const completeButton = document.createElement('button');
-  completeButton.innerText = 'Selesai dibaca';
+  completeButton.innerText = bookObject.isComplete ? 'Belum dibaca' : 'Selesai dibaca'; 
   completeButton.setAttribute('data-testid', 'bookItemIsCompleteButton');
   completeButton.addEventListener('click', function () {
     toggleBookStatus(bookObject.id);
@@ -195,10 +128,31 @@ function editBook(bookId) {
     document.getElementById('bookFormTitle').value = book.title;
     document.getElementById('bookFormAuthor').value = book.author;
     document.getElementById('bookFormYear').value = book.year;
-    deleteBook(bookId);
+    document.getElementById('bookFormIsComplete').checked = book.isComplete;
+
+    editingBookId = bookId; 
+    document.getElementById('bookFormSubmit').innerText = 'Update Buku';
   }
 }
+
+document.addEventListener(RENDER_BOOK, function () {
+  const incompleteBookList = document.getElementById('incompleteBookList');
+  const completeBookList = document.getElementById('completeBookList');
+  
+  incompleteBookList.innerHTML = '';
+  completeBookList.innerHTML = '';
+  
+  for (const book of books) {
+    const bookElement = createBookElement(book);
+    if (book.isComplete) {
+      completeBookList.appendChild(bookElement);
+    } else {
+      incompleteBookList.appendChild(bookElement);
+    }
+  }
+});
 
 function saveData() {
   localStorage.setItem('books', JSON.stringify(books));
 }
+
